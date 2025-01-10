@@ -297,280 +297,228 @@ function hireEmployee() {
             gameState.employees = [];
         }
 
-        gameState.money -= 5000;
-        
         gameState.employees.push(newEmployee);
+        gameState.money -= 5000;
 
         updateDisplay();
         updateEmployeesList();
+        showNotification('Новый сотрудник нанят!', 'success');
         saveGame();
-
-        showNotification(`Нанят новый сотрудник: ${newEmployee.name}`, 'success');
-        
-        const employeeAdded = gameState.employees.some(emp => emp.id === newEmployee.id);
-        if (!employeeAdded) {
-            throw new Error('Сотрудник не был добавлен в список');
-        }
 
     } catch (error) {
         console.error('Ошибка при найме сотрудника:', error);
-        showNotification(`Ошибка при найме: ${error.message}`, 'error');
-        
-        if (gameState && typeof gameState.money === 'number') {
-            gameState.money += 5000;
-            updateDisplay();
-        }
+        showNotification('Ошибка при найме сотрудника', 'error');
     }
 }
 
 function updateEmployeesList() {
     try {
-        const list = document.getElementById('employees-list');
-        if (!list) {
-            throw new Error('Элемент списка сотрудников не найден');
-        }
+        const employeesList = document.getElementById('employees-list');
+        if (!employeesList) return;
 
-        if (!Array.isArray(gameState.employees)) {
-            throw new Error('Некорректный массив сотрудников');
-        }
-
-        list.innerHTML = '';
+        employeesList.innerHTML = '';
         
+        if (!Array.isArray(gameState.employees)) {
+            throw new Error('Список сотрудников не инициализирован');
+        }
+
         gameState.employees.forEach(employee => {
-            if (!employee || !employee.name || typeof employee.skill !== 'number') {
-                console.warn('Пропущен некорректный сотрудник:', employee);
-                return;
-            }
-
-            const skillStars = '⭐'.repeat(Math.min(Math.max(employee.skill, 1), 5));
-            const employeeDiv = document.createElement('div');
-            employeeDiv.className = 'employee';
-            employeeDiv.innerHTML = `
-                <div>
-                    <i class="fas fa-user-circle"></i>
+            const employeeElement = document.createElement('div');
+            employeeElement.className = 'employee';
+            
+            const stars = '★'.repeat(employee.skill) + '☆'.repeat(5 - employee.skill);
+            
+            employeeElement.innerHTML = `
+                <span>
+                    <i class="fas fa-user"></i>
                     ${employee.name}
-                    <span class="specialty">${employee.specialty || 'Разработчик'}</span>
-                </div>
-                <div class="skill-level" title="Уровень навыка: ${employee.skill}">
-                    ${skillStars}
-                </div>
+                    <span class="specialty">${employee.specialty}</span>
+                </span>
+                <span class="skill-level">${stars}</span>
             `;
-            list.appendChild(employeeDiv);
+            
+            employeesList.appendChild(employeeElement);
         });
-
     } catch (error) {
         console.error('Ошибка при обновлении списка сотрудников:', error);
-        showNotification('Ошибка при обновлении списка сотрудников', 'error');
     }
 }
 
 function generateNewProject() {
     try {
+        if (!Array.isArray(projectTypes) || projectTypes.length === 0) {
+            throw new Error('Типы проектов не определены');
+        }
+
+        const randomType = projectTypes[Math.floor(Math.random() * projectTypes.length)];
+        
+        if (!randomType) {
+            throw new Error('Не удалось выбрать тип проекта');
+        }
+
+        const difficultyMultiplier = 1 + (Math.random() * 0.4 - 0.2);
+        const costMultiplier = 1 + (Math.random() * 0.4 - 0.2);
+
+        const newProject = {
+            id: Date.now(),
+            name: randomType.name,
+            type: randomType.name,
+            cost: Math.round(randomType.cost * costMultiplier),
+            duration: Math.round(randomType.duration * difficultyMultiplier),
+            difficulty: randomType.difficulty,
+            icon: randomType.icon,
+            timeLeft: Math.round(randomType.duration * difficultyMultiplier)
+        };
+
         if (!Array.isArray(gameState.availableProjects)) {
             gameState.availableProjects = [];
         }
 
         if (gameState.availableProjects.length >= 3) {
-            return;
+            gameState.availableProjects.shift();
         }
-
-        if (!Array.isArray(projectTypes) || projectTypes.length === 0) {
-            throw new Error('Типы проектов не определены');
-        }
-
-        const projectType = projectTypes[Math.floor(Math.random() * projectTypes.length)];
-        
-        const variation = 0.2;
-        const costVariation = 1 + (Math.random() * variation * 2 - variation);
-        const durationVariation = 1 + (Math.random() * variation * 2 - variation);
-
-        const newProject = {
-            id: Date.now(),
-            name: projectType.name,
-            cost: Math.round(projectType.cost * costVariation),
-            duration: Math.round(projectType.duration * durationVariation),
-            difficulty: projectType.difficulty,
-            icon: projectType.icon || 'fa-code',
-            description: generateProjectDescription(projectType.name),
-            requiredSkills: generateRequiredSkills()
-        };
 
         gameState.availableProjects.push(newProject);
         updateProjectsList();
         
-        showNotification(`Доступен новый проект: ${newProject.name}`, 'info');
-
     } catch (error) {
         console.error('Ошибка при генерации проекта:', error);
     }
 }
 
-function generateProjectDescription(projectName) {
-    const clients = [
-        'стартап', 'крупная компания', 'локальный бизнес', 
-        'международная корпорация', 'государственное учреждение'
-    ];
-    const industries = [
-        'e-commerce', 'образование', 'здравоохранение', 
-        'финансы', 'развлечения', 'логистика'
-    ];
-    const features = [
-        'авторизацией', 'аналитикой', 'интеграцией платежей',
-        'чатом', 'административной панелью', 'API'
-    ];
-
-    const client = clients[Math.floor(Math.random() * clients.length)];
-    const industry = industries[Math.floor(Math.random() * industries.length)];
-    const feature = features[Math.floor(Math.random() * features.length)];
-
-    return `${projectName} для ${client} в сфере ${industry} с ${feature}`;
-}
-
-function generateRequiredSkills() {
-    const skills = ['Frontend', 'Backend', 'Mobile', 'DevOps', 'UI/UX'];
-    const requiredCount = Math.floor(Math.random() * 2) + 1;
-    const shuffled = skills.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, requiredCount);
-}
-
 function updateProjectsList() {
     try {
-        const list = document.getElementById('available-projects');
-        if (!list) {
-            throw new Error('Элемент списка проектов не найден');
-        }
+        const projectsList = document.getElementById('available-projects');
+        if (!projectsList) return;
 
-        if (!Array.isArray(gameState.availableProjects)) {
-            throw new Error('Некорректный массив проектов');
-        }
-
-        list.innerHTML = '';
+        projectsList.innerHTML = '';
         
+        if (!Array.isArray(gameState.availableProjects)) {
+            throw new Error('Список проектов не инициализирован');
+        }
+
         if (gameState.availableProjects.length === 0) {
-            list.innerHTML = '<div class="no-projects">Ожидаем новые проекты...</div>';
+            projectsList.innerHTML = '<div class="no-projects">Нет доступных проектов</div>';
             return;
         }
 
         gameState.availableProjects.forEach(project => {
-            if (!project || !project.name) {
-                console.warn('Пропущен некорректный проект:', project);
-                return;
-            }
-
-            const projectDiv = document.createElement('div');
-            projectDiv.className = 'project';
-            projectDiv.innerHTML = `
-                <h3><i class="fas ${project.icon}"></i> ${project.name}</h3>
-                <p class="project-description">${project.description}</p>
-                <div class="project-details">
-                    <p><i class="fas fa-coins"></i> Стоимость: $${project.cost}</p>
-                    <p><i class="fas fa-clock"></i> Длительность: ${project.duration} сек.</p>
-                    <p><i class="fas fa-star"></i> Сложность: ${project.difficulty}/3</p>
-                </div>
-                <div class="required-skills">
-                    <p>Требуемые навыки:</p>
-                    ${project.requiredSkills.map(skill => 
-                        `<span class="skill-tag">${skill}</span>`
-                    ).join('')}
-                </div>
+            const projectElement = document.createElement('div');
+            projectElement.className = 'project';
+            
+            const stars = '★'.repeat(project.difficulty) + '☆'.repeat(5 - project.difficulty);
+            
+            projectElement.innerHTML = `
+                <h3>
+                    <i class="fas ${project.icon}"></i>
+                    ${project.name}
+                </h3>
+                <p>Стоимость: $${project.cost.toLocaleString()}</p>
+                <p>Длительность: ${project.duration} дней</p>
+                <p>Сложность: <span class="skill-level">${stars}</span></p>
                 <button onclick="startProject(${project.id})">
                     <i class="fas fa-play"></i>
-                    Взять проект
+                    Начать проект
                 </button>
             `;
-            list.appendChild(projectDiv);
+            
+            projectsList.appendChild(projectElement);
         });
-
     } catch (error) {
         console.error('Ошибка при обновлении списка проектов:', error);
-        showNotification('Ошибка при обновлении списка проектов', 'error');
     }
 }
 
 function startProject(projectId) {
-    const project = gameState.availableProjects.find(p => p.id === projectId);
-    if (!project) return; 
-    if (gameState.employees.length > 0) {
-        const teamEfficiency = calculateTeamEfficiency();
+    try {
+        const project = gameState.availableProjects.find(p => p.id === projectId);
         
-        const adjustedDuration = calculateProjectDuration(project, teamEfficiency);
-        
+        if (!project) {
+            throw new Error('Проект не найден');
+        }
+
+        if (gameState.activeProjects.length >= gameState.employees.length) {
+            showNotification('Недостаточно свободных сотрудников!', 'error');
+            return;
+        }
+
         gameState.availableProjects = gameState.availableProjects.filter(p => p.id !== projectId);
+        gameState.activeProjects.push(project);
         
-        const activeProject = {
-            ...project,
-            timeLeft: adjustedDuration,
-            originalDuration: adjustedDuration,
-            startTime: Date.now(),
-            progress: 0,
-            assignedTeam: [...gameState.employees]
-        };
-        
-        gameState.activeProjects.push(activeProject);
-        
-        showNotification(`Проект начат! Расчетное время: ${adjustedDuration} сек.`);
         updateProjectsList();
         updateActiveProjects();
-    } else {
-        alert('Нужно нанять хотя бы одного разработчика!');
+        showNotification('Проект начат!', 'success');
+        saveGame();
+        
+    } catch (error) {
+        console.error('Ошибка при запуске проекта:', error);
+        showNotification('Ошибка при запуске проекта', 'error');
     }
-}
-
-function calculateTeamEfficiency() {
-    return gameState.employees.reduce((total, employee) => {
-        return total + employee.skill;
-    }, 0);
-}
-
-function calculateProjectDuration(project, teamEfficiency) {
-    if (!project || teamEfficiency <= 0) {
-        return project?.duration || 30;
-    }
-    
-    const efficiencyMultiplier = teamEfficiency / (project.difficulty * 2);
-    const adjustedDuration = Math.max(
-        Math.round(project.duration / efficiencyMultiplier),
-        Math.ceil(project.duration * 0.3)
-    );
-    return isFinite(adjustedDuration) ? adjustedDuration : project.duration;
 }
 
 function updateActiveProjects() {
-    const activeProjectsDiv = document.getElementById('active-projects');
-    if (!activeProjectsDiv) return;
+    try {
+        const activeProjectsList = document.getElementById('active-projects');
+        if (!activeProjectsList) return;
 
-    activeProjectsDiv.innerHTML = '';
-    gameState.activeProjects.forEach(project => {
-        const progressPercentage = ((project.originalDuration - project.timeLeft) / project.originalDuration) * 100;
-        const teamEfficiency = project.assignedTeam.reduce((sum, emp) => sum + emp.skill, 0);
+        activeProjectsList.innerHTML = '';
         
-        activeProjectsDiv.innerHTML += `
-            <div class="project active-project">
-                <h3><i class="fas ${project.icon}"></i> ${project.name}</h3>
-                <p><i class="fas fa-clock"></i> Осталось: ${Math.max(0, project.timeLeft)} сек.</p>
-                <p><i class="fas fa-users"></i> Команда: ${project.assignedTeam.length} чел.</p>
-                <p><i class="fas fa-bolt"></i> Эффективность команды: ${teamEfficiency}</p>
+        if (!Array.isArray(gameState.activeProjects)) {
+            throw new Error('Список активных проектов не инициализирован');
+        }
+
+        if (gameState.activeProjects.length === 0) {
+            activeProjectsList.innerHTML = '<div class="no-projects">Нет активных проектов</div>';
+            return;
+        }
+
+        gameState.activeProjects.forEach(project => {
+            const projectElement = document.createElement('div');
+            projectElement.className = 'project active-project';
+            
+            const progress = ((project.duration - project.timeLeft) / project.duration) * 100;
+            const stars = '★'.repeat(project.difficulty) + '☆'.repeat(5 - project.difficulty);
+            
+            projectElement.innerHTML = `
+                <h3>
+                    <i class="fas ${project.icon}"></i>
+                    ${project.name}
+                </h3>
+                <p>Стоимость: $${project.cost.toLocaleString()}</p>
+                <p>Осталось: ${Math.ceil(project.timeLeft)} дней</p>
+                <p>Сложность: <span class="skill-level">${stars}</span></p>
                 <div class="progress-bar">
-                    <div class="progress" style="width: ${Math.min(100, progressPercentage)}%"></div>
+                    <div class="progress" style="width: ${progress}%"></div>
                 </div>
-            </div>
-        `;
-    });
+            `;
+            
+            activeProjectsList.appendChild(projectElement);
+        });
+    } catch (error) {
+        console.error('Ошибка при обновлении активных проектов:', error);
+    }
 }
 
 function completeProject(project) {
-    gameState.money += project.cost;
-    gameState.reputation += project.difficulty;
-    gameState.projects++;
-    
-    showNotification(`Проект "${project.name}" завершен! +$${project.cost}`);
-    
-    updateDisplay();
+    try {
+        if (!project) {
+            throw new Error('Проект не определен');
+        }
+
+        gameState.money += project.cost;
+        gameState.reputation += project.difficulty;
+        gameState.projects++;
+
+        showNotification(`Проект завершен! +$${project.cost.toLocaleString()}`, 'success');
+        updateDisplay();
+        saveGame();
+        
+    } catch (error) {
+        console.error('Ошибка при завершении проекта:', error);
+    }
 }
 
-function showNotification(message, type = 'success') {
-    if (!message) return;
-
+function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
@@ -784,7 +732,6 @@ function addStatistics() {
         projectSuccess: [],
         employeeEfficiency: []
     };
-    // Реализация отображения графиков
 }
 
 function updateHiringCost() {
@@ -845,18 +792,16 @@ const cheatCodes = {
     }
 };
 
-// Добавляем слушатель для чит-кодов
 let cheatInput = '';
 let cheatTimeout;
 
 document.addEventListener('keypress', (e) => {
-    if (!DEV_MODE) return; // Чит-коды работают только в режиме разработки
+    if (!DEV_MODE) return;
     
     clearTimeout(cheatTimeout);
     
     cheatInput += e.key.toLowerCase();
     
-    // Проверяем, есть ли введенная последовательность в чит-кодах
     Object.keys(cheatCodes).forEach(code => {
         if (cheatInput.includes(code)) {
             cheatCodes[code]();
@@ -865,7 +810,6 @@ document.addEventListener('keypress', (e) => {
         }
     });
     
-    // Очищаем ввод через 2 секунды после последнего нажатия
     cheatTimeout = setTimeout(() => {
         cheatInput = '';
     }, 2000);

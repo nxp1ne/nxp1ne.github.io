@@ -18,15 +18,12 @@
     --bg-card: #1a1d24;
     --bg-element: #1e2028;
     --bg-hover: #272b38;
-    
     --text-primary: #ffffff;
     --text-secondary: #c2c5cc;
     --text-muted: #a1a5b0;
-    
     --accent-blue: #4171f5;
     --accent-blue-hover: #5181ff;
     --accent-light: #e2e8ff;
-    
     --star-color: #ffd700;
     --tag-bg: rgba(65, 113, 245, 0.15);
 }
@@ -656,28 +653,6 @@ body, .game-container, .employee, .project {
 
 .dismiss-button:hover {
     opacity: 1;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideOut {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
 }
 
 .theme-warning.hiding {
