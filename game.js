@@ -9,6 +9,13 @@ let gameState = {
 };
 
 const projectTypes = [
+    {
+        name: "Веб-программирование",
+        cost: 1000,
+        duration: 30,
+        difficulty: 1,
+        icon: "fa-code"
+    },
     { 
         name: "Веб-сайт", 
         cost: 1000, 
@@ -66,6 +73,8 @@ const volumeSlider = document.getElementById('volumeSlider');
 const musicIcon = document.getElementById('musicIcon');
 
 let currentTheme = localStorage.getItem('theme') || 'light';
+
+const DEV_MODE = true;
 
 function showThemeWarning() {
     const warning = document.getElementById('themeWarning');
@@ -247,11 +256,16 @@ function hireEmployee() {
 
         const names = [
             "Алексей", "Мария", "Дмитрий", "Анна", "Сергей", 
-            "Елена", "Павел", "Ольга", "Андрей", "Наталья"
+            "Елена", "Павел", "Ольга", "Андрей", "Наталья", "Владимир", "Дамир", "Артур", "Кирилл", "Александр", "Алексей", "Максим", 
+            "Евгений", "Денис", "Илья", "Михаил", "Николай", "Олег", "Павел", "Роман", "Сергей", "Тимур", "Федор", "Юрий", "Ярослав", 
+            "Александр", "Андрей", "Артем", "Богдан", "Владислав", "Глеб", "Даниил", "Егор", "Иван", "Кирилл", "Константин", 
+            "Леонид", "Макар", "Матвей", "Мирон", "Никита", "Олег", "Павел", "Роман", "Сергей", "Тимур", "Федор", "Юрий", 
+            "Ярослав"
         ];
         const surnames = [
             "Иванов", "Петров", "Сидоров", "Смирнов", "Кузнецов",
-            "Попов", "Соколов", "Лебедев", "Козлов", "Новиков"
+            "Попов", "Соколов", "Лебедев", "Козлов", "Новиков", "Владимиров", "Омутных", "Югас", "Беляев", "Иванов", "Петров", "Сидоров", "Смирнов", "Кузнецов",
+            "Попов", "Соколов", "Лебедев", "Козлов", "Новиков", "Владимиров", "Омутных", "Югас", "Беляев"
         ];
         
         if (!Array.isArray(names) || !Array.isArray(surnames) || names.length === 0 || surnames.length === 0) {
@@ -261,7 +275,7 @@ function hireEmployee() {
         const randomName = `${names[Math.floor(Math.random() * names.length)]} ${
             surnames[Math.floor(Math.random() * surnames.length)]}`;
 
-        const specialties = ["Frontend", "Backend", "Mobile", "DevOps", "FullStack", "AI", "GameDev", "Service", "Porting", "UI/UX", "Design", "Marketing", "Sales", "HR", "Finance", "Legal", "Project Management", "QA", "Support", "Analytics", "Security"];
+        const specialties = ["Frontend", "Backend", "Mobile", "DevOps", "FullStack", "AI", "GameDev", "Service", "Porting", "UI/UX", "Design", "Marketing", "Sales", "HR", "Finance", "Legal", "Project Management", "QA", "Support", "Analytics", "Security", "System-Programming", "Embedded-developers"];
         
         if (!Array.isArray(specialties) || specialties.length === 0) {
             throw new Error('Ошибка в данных специальностей');
@@ -740,3 +754,119 @@ function checkGameState() {
 }
 
 setInterval(checkGameState, 5000);
+
+function developEmployee(employeeId) {
+    const employee = gameState.employees.find(emp => emp.id === employeeId);
+    if (employee && employee.skill < 5) {
+        const cost = 1000 * employee.skill;
+        if (gameState.money >= cost) {
+            employee.skill++;
+            gameState.money -= cost;
+            updateDisplay();
+        }
+    }
+}
+
+function calculateProjectBonus(project) {
+    return project.cost * (0.1 + (project.difficulty * 0.05));
+}
+
+function calculateMonthlyExpenses() {
+    const employeeSalaries = gameState.employees.reduce((total, emp) => 
+        total + (1000 * emp.skill), 0);
+    const officeRent = 2000 + (gameState.employees.length * 200);
+    return employeeSalaries + officeRent;
+}
+
+function addStatistics() {
+    const stats = {
+        monthlyIncome: [],
+        projectSuccess: [],
+        employeeEfficiency: []
+    };
+    // Реализация отображения графиков
+}
+
+function updateHiringCost() {
+    const baseCost = 5000;
+    const multiplier = 1 + (gameState.employees.length * 0.1);
+    return Math.round(baseCost * multiplier);
+}
+
+function calculateProjectRisks(project) {
+    const teamSkill = calculateTeamEfficiency();
+    const riskFactor = project.difficulty / teamSkill;
+    const failChance = riskFactor * 0.1;
+    return Math.min(failChance, 0.5);
+}
+
+const cheatCodes = {
+    'youaregod': () => {
+        gameState.money = 999999999;
+        gameState.reputation = 999999;
+        gameState.employees.forEach(emp => emp.skill = 5);
+        gameState.activeProjects.forEach(project => {
+            project.timeLeft = 1;
+        });
+        showNotification('Режим бога активирован!', 'success');
+        updateDisplay();
+        updateEmployeesList();
+    },
+    'moneymoney': () => {
+        gameState.money += 100000;
+        showNotification('Добавлено $100,000!', 'success');
+    },
+    'reputation': () => {
+        gameState.reputation += 50;
+        showNotification('Репутация повышена на 50!', 'success');
+    },
+    'skillup': () => {
+        gameState.employees.forEach(emp => {
+            emp.skill = Math.min(emp.skill + 1, 5);
+        });
+        showNotification('Навыки всех сотрудников повышены!', 'success');
+        updateEmployeesList();
+    },
+    'godmode': () => {
+        gameState.money = 999999999;
+        gameState.reputation = 999999;
+        gameState.employees.forEach(emp => emp.skill = 5);
+        showNotification('Режим бога активирован!', 'success');
+        updateDisplay();
+        updateEmployeesList();
+    },
+    'fastproject': () => {
+        if (gameState.activeProjects.length > 0) {
+            gameState.activeProjects.forEach(project => {
+                project.timeLeft = 1;
+            });
+            showNotification('Все активные проекты почти завершены!', 'success');
+        }
+    }
+};
+
+// Добавляем слушатель для чит-кодов
+let cheatInput = '';
+let cheatTimeout;
+
+document.addEventListener('keypress', (e) => {
+    if (!DEV_MODE) return; // Чит-коды работают только в режиме разработки
+    
+    clearTimeout(cheatTimeout);
+    
+    cheatInput += e.key.toLowerCase();
+    
+    // Проверяем, есть ли введенная последовательность в чит-кодах
+    Object.keys(cheatCodes).forEach(code => {
+        if (cheatInput.includes(code)) {
+            cheatCodes[code]();
+            cheatInput = '';
+            return;
+        }
+    });
+    
+    // Очищаем ввод через 2 секунды после последнего нажатия
+    cheatTimeout = setTimeout(() => {
+        cheatInput = '';
+    }, 2000);
+});
