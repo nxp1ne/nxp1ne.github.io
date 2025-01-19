@@ -288,6 +288,13 @@
         let power = 1;
         let upgradeCost = 10;
         let currentNumber = 5;
+        let userId = '';
+
+        // Получаем ID пользователя из Telegram WebApp
+        window.Telegram.WebApp.ready(() => {
+            userId = window.Telegram.WebApp.initDataUnsafe?.user?.id || 'unknown';
+            console.log(`Игрок ${userId} зашел в игру`);
+        });
 
         function updateUI() {
             // Обновляем все элементы UI
@@ -313,6 +320,7 @@
 
         function mine() {
             tokens += power;
+            console.log(`Игрок ${userId}: клик +${power} монет (всего: ${tokens})`);
             updateUI();
         }
 
@@ -320,6 +328,7 @@
             if (tokens >= upgradeCost) {
                 tokens -= upgradeCost;
                 power += 1;
+                console.log(`Игрок ${userId}: улучшение куплено. Новая мощность: ${power}`);
                 upgradeCost = Math.floor(upgradeCost * 1.5);
                 updateUI();
             }
@@ -333,48 +342,46 @@
                 return;
             }
 
-            // Списываем ставку
-            tokens -= betAmount;
+            console.log(`Игрок ${userId}: ставка ${betAmount} монет (${choice})`);
             
-            // Генерируем новое число от 0 до 10
+            tokens -= betAmount;
             const newNumber = Math.floor(Math.random() * 11);
             
-            // Определяем, выиграл ли игрок
+            console.log(`Игрок ${userId}: текущее число ${currentNumber}, новое число ${newNumber}`);
+            
             let won = false;
             if (choice === 'higher' && newNumber > currentNumber) won = true;
             if (choice === 'lower' && newNumber < currentNumber) won = true;
             
-            // Обновляем текущее число
             currentNumber = newNumber;
             document.getElementById('current-number').textContent = currentNumber;
             
-            // Начисляем выигрыш
             if (won) {
                 const winAmount = Math.floor(betAmount * 2.2);
                 tokens += winAmount;
+                console.log(`Игрок ${userId}: выиграл ${winAmount} монет`);
                 alert(`Поздравляем! Вы выиграли ${winAmount} монет!`);
             } else {
+                console.log(`Игрок ${userId}: проиграл ${betAmount} монет`);
                 alert('Вы проиграли! Попробуйте еще раз!');
             }
             
-            // Обновляем интерфейс
             updateUI();
         }
 
         function showSection(sectionId) {
-            // Скрываем все секции
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Показываем нужную секцию
             document.getElementById(sectionId).classList.add('active');
             
-            // Обновляем активную кнопку навигации
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
+
+            console.log(`Игрок ${userId}: перешел в раздел ${sectionId}`);
         }
 
         // Инициализация Telegram WebApp
