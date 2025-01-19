@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .button {
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            width: 100%;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+        .card {
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>💎 Токены: <span id="tokens">0</span></h2>
+            <h3>⚡️ Мощность: <span id="power">1</span></h3>
+        </div>
+        
+        <button class="button" onclick="mine()">
+            Майнить
+        </button>
+        
+        <button class="button" onclick="upgrade()">
+            Улучшить (10 токенов)
+        </button>
+    </div>
+
+    <script>
+        let tokens = 0;
+        let power = 1;
+        let upgradeCost = 10;
+
+        function updateUI() {
+            document.getElementById('tokens').textContent = tokens;
+            document.getElementById('power').textContent = power;
+        }
+
+        function mine() {
+            tokens += power;
+            updateUI();
+        }
+
+        function upgrade() {
+            if (tokens >= upgradeCost) {
+                tokens -= upgradeCost;
+                power += 1;
+                upgradeCost = Math.floor(upgradeCost * 1.5);
+                updateUI();
+            }
+        }
+
+        // Инициализация Telegram WebApp
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+    </script>
+</body>
+</html> 
