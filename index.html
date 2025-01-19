@@ -108,43 +108,110 @@
         .nav-item.active {
             color: #FFFFFF;
         }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .shop-item {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shop-item button {
+            background: #2C2C2C;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .shop-item button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="balance">
-                <span class="balance-value">0.00</span> монет
+                <span class="balance-value">0</span> UQDC
             </div>
         </div>
 
-        <button class="main-button" onclick="mine()">
-            Кликать
-        </button>
+        <!-- Главная секция -->
+        <section id="home" class="section active">
+            <button class="main-button" onclick="mine()">
+                Кликать
+            </button>
 
-        <div class="card">
-            <div class="card-title">Статистика</div>
-            <div class="stats">
-                <span class="stats-label">Мощность</span>
-                <span id="power">1</span>
+            <div class="card">
+                <div class="card-title">Статистика</div>
+                <div class="stats">
+                    <span class="stats-label">Мощность</span>
+                    <span id="power">1</span>
+                </div>
+                <div class="stats">
+                    <span class="stats-label">Следующее улучшение</span>
+                    <span id="upgrade-cost">10 монет</span>
+                </div>
             </div>
-            <div class="stats">
-                <span class="stats-label">Следующее улучшение</span>
-                <span id="upgrade-cost">10 монет</span>
+        </section>
+
+        <!-- Секция магазина -->
+        <section id="shop" class="section">
+            <div class="shop-item">
+                <div>
+                    <h3>Улучшить мощность</h3>
+                    <p>Текущая мощность: <span id="shop-power">1</span></p>
+                </div>
+                <button onclick="upgrade()">
+                    Купить за <span id="shop-cost">10</span>
+                </button>
             </div>
-        </div>
+        </section>
+
+        <!-- Секция статистики -->
+        <section id="stats" class="section">
+            <div class="card">
+                <div class="card-title">Общая статистика</div>
+                <div class="stats">
+                    <span class="stats-label">Всего монет</span>
+                    <span id="total-tokens">0</span>
+                </div>
+                <div class="stats">
+                    <span class="stats-label">Текущая мощность</span>
+                    <span id="stats-power">1</span>
+                </div>
+                <div class="stats">
+                    <span class="stats-label">Стоимость улучшения</span>
+                    <span id="stats-upgrade-cost">10</span>
+                </div>
+            </div>
+        </section>
     </div>
 
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active">
+        <a href="#" class="nav-item active" onclick="showSection('home')">
             <span>🏠</span>
             <span>Главная</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" onclick="showSection('shop')">
             <span>🛍️</span>
             <span>Магазин</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" onclick="showSection('stats')">
             <span>📊</span>
             <span>Статистика</span>
         </a>
@@ -156,14 +223,49 @@
         let upgradeCost = 10;
 
         function updateUI() {
-            document.querySelector('.balance-value').textContent = tokens.toFixed(2);
+            // Обновляем все элементы UI
+            document.querySelector('.balance-value').textContent = tokens;
             document.getElementById('power').textContent = power;
             document.getElementById('upgrade-cost').textContent = upgradeCost + ' монет';
+            
+            // Обновляем элементы магазина
+            document.getElementById('shop-power').textContent = power;
+            document.getElementById('shop-cost').textContent = upgradeCost;
+            
+            // Обновляем элементы статистики
+            document.getElementById('total-tokens').textContent = tokens;
+            document.getElementById('stats-power').textContent = power;
+            document.getElementById('stats-upgrade-cost').textContent = upgradeCost;
         }
 
         function mine() {
             tokens += power;
             updateUI();
+        }
+
+        function upgrade() {
+            if (tokens >= upgradeCost) {
+                tokens -= upgradeCost;
+                power += 1;
+                upgradeCost = Math.floor(upgradeCost * 1.5);
+                updateUI();
+            }
+        }
+
+        function showSection(sectionId) {
+            // Скрываем все секции
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Показываем нужную секцию
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Обновляем активную кнопку навигации
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
         }
 
         // Инициализация Telegram WebApp
@@ -174,6 +276,9 @@
         if (window.Telegram.WebApp.colorScheme === 'dark') {
             document.body.style.backgroundColor = '#0F0F0F';
         }
+
+        // Инициализация UI
+        updateUI();
     </script>
 </body>
 </html> 
