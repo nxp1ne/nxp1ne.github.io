@@ -140,6 +140,54 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        .game-card {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .game-amount {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #00FF85;
+        }
+
+        .game-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .game-button {
+            background: #2C2C2C;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .game-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .bet-input {
+            background: #2C2C2C;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            width: 100%;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -200,6 +248,20 @@
                 </div>
             </div>
         </section>
+
+        <!-- Секция игр -->
+        <section id="games" class="section">
+            <div class="game-card">
+                <h3>Больше или Меньше</h3>
+                <p>Угадайте, будет ли следующее число больше или меньше</p>
+                <div class="game-amount" id="current-number">5</div>
+                <input type="number" class="bet-input" id="bet-amount" placeholder="Введите ставку" min="1">
+                <div class="game-buttons">
+                    <button class="game-button" onclick="playGame('higher')">Больше (2.2x)</button>
+                    <button class="game-button" onclick="playGame('lower')">Меньше (2.2x)</button>
+                </div>
+            </div>
+        </section>
     </div>
 
     <nav class="bottom-nav">
@@ -211,6 +273,10 @@
             <span>🛍️</span>
             <span>Магазин</span>
         </a>
+        <a href="#" class="nav-item" onclick="showSection('games')">
+            <span>🎮</span>
+            <span>Игры</span>
+        </a>
         <a href="#" class="nav-item" onclick="showSection('stats')">
             <span>📊</span>
             <span>Статистика</span>
@@ -221,6 +287,7 @@
         let tokens = 0;
         let power = 1;
         let upgradeCost = 10;
+        let currentNumber = 5;
 
         function updateUI() {
             // Обновляем все элементы UI
@@ -236,6 +303,12 @@
             document.getElementById('total-tokens').textContent = tokens;
             document.getElementById('stats-power').textContent = power;
             document.getElementById('stats-upgrade-cost').textContent = upgradeCost;
+            
+            // Обновляем поле ставки
+            const betInput = document.getElementById('bet-amount');
+            if (betInput) {
+                betInput.max = tokens;
+            }
         }
 
         function mine() {
@@ -250,6 +323,42 @@
                 upgradeCost = Math.floor(upgradeCost * 1.5);
                 updateUI();
             }
+        }
+
+        function playGame(choice) {
+            const betAmount = parseInt(document.getElementById('bet-amount').value);
+            
+            if (isNaN(betAmount) || betAmount < 1 || betAmount > tokens) {
+                alert('Введите корректную ставку!');
+                return;
+            }
+
+            // Списываем ставку
+            tokens -= betAmount;
+            
+            // Генерируем новое число от 0 до 10
+            const newNumber = Math.floor(Math.random() * 11);
+            
+            // Определяем, выиграл ли игрок
+            let won = false;
+            if (choice === 'higher' && newNumber > currentNumber) won = true;
+            if (choice === 'lower' && newNumber < currentNumber) won = true;
+            
+            // Обновляем текущее число
+            currentNumber = newNumber;
+            document.getElementById('current-number').textContent = currentNumber;
+            
+            // Начисляем выигрыш
+            if (won) {
+                const winAmount = Math.floor(betAmount * 2.2);
+                tokens += winAmount;
+                alert(`Поздравляем! Вы выиграли ${winAmount} монет!`);
+            } else {
+                alert('Вы проиграли! Попробуйте еще раз!');
+            }
+            
+            // Обновляем интерфейс
+            updateUI();
         }
 
         function showSection(sectionId) {
