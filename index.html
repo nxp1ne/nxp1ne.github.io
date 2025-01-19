@@ -42,39 +42,21 @@
             color: #00FF85;
         }
 
-        .actions {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .action-button {
+        .main-button {
             background: #1A1A1A;
             border: none;
             border-radius: 12px;
-            padding: 16px;
+            padding: 24px;
+            width: 100%;
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
+            font-size: 18px;
             cursor: pointer;
+            margin-bottom: 16px;
             transition: background 0.2s;
         }
 
-        .action-button:active {
+        .main-button:active {
             background: #2C2C2C;
-        }
-
-        .action-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-
-        .action-label {
-            font-size: 12px;
-            opacity: 0.8;
         }
 
         .card {
@@ -108,7 +90,7 @@
             right: 0;
             background: #1A1A1A;
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             padding: 12px;
             gap: 8px;
         }
@@ -132,34 +114,23 @@
     <div class="container">
         <div class="header">
             <div class="balance">
-                <span class="balance-value">0.00</span> UQD
+                <span class="balance-value">0.00</span> монет
             </div>
         </div>
 
-        <div class="actions">
-            <button class="action-button" onclick="mine()">
-                <span class="action-icon">🌱</span>
-                <span class="action-label">Launch token</span>
-            </button>
-            <button class="action-button" onclick="upgrade()">
-                <span class="action-icon">🔥</span>
-                <span class="action-label">Memepad</span>
-            </button>
-            <button class="action-button">
-                <span class="action-icon">🚀</span>
-                <span class="action-label">Trading bot</span>
-            </button>
-        </div>
+        <button class="main-button" onclick="mine()">
+            Кликать
+        </button>
 
         <div class="card">
-            <div class="card-title">Statistics</div>
+            <div class="card-title">Статистика</div>
             <div class="stats">
-                <span class="stats-label">Power</span>
-                <span id="power">1 T/s</span>
+                <span class="stats-label">Мощность</span>
+                <span id="power">1</span>
             </div>
             <div class="stats">
-                <span class="stats-label">Next upgrade</span>
-                <span id="upgrade-cost">10 UQD</span>
+                <span class="stats-label">Следующее улучшение</span>
+                <span id="upgrade-cost">10 монет</span>
             </div>
         </div>
     </div>
@@ -167,23 +138,15 @@
     <nav class="bottom-nav">
         <a href="#" class="nav-item active">
             <span>🏠</span>
-            <span>Home</span>
+            <span>Главная</span>
         </a>
         <a href="#" class="nav-item">
-            <span>💰</span>
-            <span>Earn</span>
+            <span>🛍️</span>
+            <span>Магазин</span>
         </a>
         <a href="#" class="nav-item">
-            <span>📱</span>
-            <span>Memepad</span>
-        </a>
-        <a href="#" class="nav-item">
-            <span>👥</span>
-            <span>Frens</span>
-        </a>
-        <a href="#" class="nav-item">
-            <span>💼</span>
-            <span>Wallet</span>
+            <span>📊</span>
+            <span>Статистика</span>
         </a>
     </nav>
 
@@ -194,22 +157,13 @@
 
         function updateUI() {
             document.querySelector('.balance-value').textContent = tokens.toFixed(2);
-            document.getElementById('power').textContent = power + ' T/s';
-            document.getElementById('upgrade-cost').textContent = upgradeCost + ' UQD';
+            document.getElementById('power').textContent = power;
+            document.getElementById('upgrade-cost').textContent = upgradeCost + ' монет';
         }
 
         function mine() {
             tokens += power;
             updateUI();
-        }
-
-        function upgrade() {
-            if (tokens >= upgradeCost) {
-                tokens -= upgradeCost;
-                power += 1;
-                upgradeCost = Math.floor(upgradeCost * 1.5);
-                updateUI();
-            }
         }
 
         // Инициализация Telegram WebApp
