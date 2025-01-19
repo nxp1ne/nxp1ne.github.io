@@ -297,16 +297,13 @@
         });
 
         function updateUI() {
-            // Обновляем все элементы UI
             document.querySelector('.balance-value').textContent = tokens;
             document.getElementById('power').textContent = power;
             document.getElementById('upgrade-cost').textContent = upgradeCost + ' монет';
             
-            // Обновляем элементы магазина
             document.getElementById('shop-power').textContent = power;
             document.getElementById('shop-cost').textContent = upgradeCost;
             
-            // Обновляем элементы статистики
             document.getElementById('total-tokens').textContent = tokens;
             document.getElementById('stats-power').textContent = power;
             document.getElementById('stats-upgrade-cost').textContent = upgradeCost;
@@ -335,10 +332,18 @@
         }
 
         function playGame(choice) {
-            const betAmount = parseInt(document.getElementById('bet-amount').value);
+            const betInput = document.getElementById('bet-amount');
+            const betAmount = parseInt(betInput.value);
             
-            if (isNaN(betAmount) || betAmount < 1 || betAmount > tokens) {
+            // Проверяем, что ставка является числом и больше 0
+            if (isNaN(betAmount) || betAmount <= 0) {
                 alert('Введите корректную ставку!');
+                return;
+            }
+
+            // Проверяем, достаточно ли токенов
+            if (betAmount > tokens) {
+                alert('Недостаточно токенов!');
                 return;
             }
 
@@ -365,6 +370,9 @@
                 console.log(`Игрок ${userId}: проиграл ${betAmount} монет`);
                 alert('Вы проиграли! Попробуйте еще раз!');
             }
+            
+            // Очищаем поле ставки
+            betInput.value = '';
             
             updateUI();
         }
