@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Объект со ссылками для скачивания
     const fileDownload = {
-        'gangReg.jar': 'https://example.com/files/gangReg.jar',
+        'gangReg.jar': 'https://github.com/nxp1ne/nxp1ne.github.io/releases/download/GangReg.jar/GangRegister-1.0-Release.jar',
         'PlayerMoney.jar': 'https://example.com/files/PlayerMoney.jar',
     };
 
