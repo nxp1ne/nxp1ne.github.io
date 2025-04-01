@@ -3,17 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sws | Plugins</title>
+    <meta name="description" content="Скачивание высококачественных плагинов для Minecraft сервера">
+    <meta name="keywords" content="minecraft, plugins, download, плагины, майнкрафт, скачать">
+    <meta name="author" content="SWS Plugins">
+    <title>SWS Plugins | Лучшие плагины для вашего сервера</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>Добро пожаловать!</h1>
-        <p>Выберите файл для скачивания:</p>
-        <ul class="file-list">
-            <li><a href="page.html?file=gangReg.jar">GangRegister.jar</a></li>
-            <li><a href="page.html?file=PlayerMoney.jar">PlayerMoney.jar</a></li>
-        </ul>
+        <div class="header">
+            <div class="logo-container">
+                <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#2563eb" />
+                            <stop offset="100%" stop-color="#10b981" />
+                        </linearGradient>
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    <rect x="10" y="10" width="80" height="80" rx="15" fill="url(#logo-gradient)" filter="url(#glow)" />
+                    <path d="M30 35 L50 25 L70 35 L70 65 L50 75 L30 65 Z" fill="white" opacity="0.9" />
+                    <circle cx="50" cy="50" r="12" fill="#10b981" />
+                    <path d="M45 50 L48 55 L55 45" stroke="white" stroke-width="3" fill="none" />
+                </svg>
+            </div>
+            <h1>SWS Plugins</h1>
+            <p class="subtitle">Профессиональные плагины для вашего Minecraft сервера</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3 class="feature-title">Высокая производительность</h3>
+                <p>Оптимизированный код для минимальной нагрузки на сервер</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3 class="feature-title">Безопасность</h3>
+                <p>Защита от эксплойтов и уязвимостей</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-sync-alt"></i></div>
+                <h3 class="feature-title">Регулярные обновления</h3>
+                <p>Постоянная поддержка и улучшения</p>
+            </div>
+        </div>
+
+        <section class="available-plugins">
+            <h2>Доступные плагины</h2>
+            <p>Выберите плагин для получения дополнительной информации и скачивания:</p>
+            
+            <ul class="file-list">
+                <li>
+                    <a href="page.html?file=ElysiumHeads.jar">
+                        <div class="file-icon"><i class="fas fa-users"></i></div>
+                        ElysiumHeads.jar
+                        <span class="badge new">release</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="page.html?file=PlayerMoney.jar">
+                        <div class="file-icon"><i class="fas fa-coins"></i></div>
+                        PlayerMoney.jar
+                        <span class="badge beta">beta</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section class="about-section">
+            <h2>О наших плагинах</h2>
+            <p>Все наши плагины разработаны с учетом лучших практик программирования и тщательно протестированы на совместимость с различными версиями Minecraft. Мы уделяем особое внимание производительности и удобству использования.</p>
+            <p>Вы можете быть уверены, что наши плагины не содержат вредоносного кода и не создадут проблем для вашего сервера.</p>
+            
+            <div class="minecraft-stats">
+                <div class="stat-item">
+                    <i class="fas fa-server"></i>
+                    <span class="stat-count">100+</span>
+                    <span class="stat-label">Серверов используют</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-download"></i>
+                    <span class="stat-count">1000+</span>
+                    <span class="stat-label">Загрузок</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-code-branch"></i>
+                    <span class="stat-count">15+</span>
+                    <span class="stat-label">Обновлений</span>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-links">
+                <a href="#" class="footer-link"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#" class="footer-link"><i class="fab fa-discord"></i> Discord</a>
+                <a href="#" class="footer-link"><i class="fas fa-envelope"></i> Контакт</a>
+            </div>
+            <p class="copyright">© 2023-2024 SWS Plugins. Все права защищены.</p>
+        </footer>
     </div>
 </body>
 </html>
