@@ -5,21 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Скачивание плагинов для Minecraft сервера">
     <meta name="keywords" content="minecraft, plugins, download, плагины, майнкрафт, скачать">
-    <meta name="author" content="SWS Plugins">
-    <title>SWS Plugins | Скачивание плагинов</title>
+    <meta name="author" content="Elysium Team">
+    <title>Elysium Team | Скачивание плагинов</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta property="og:title" content="Скачивание плагинов для Minecraft">
+    <meta property="og:description" content="Загрузка высококачественных плагинов для вашего Minecraft сервера">
+    <meta property="og:type" content="website">
 </head>
 <body>
+    <button class="theme-toggle" id="theme-toggle" title="Переключить тему">
+        <i class="fas fa-moon"></i>
+    </button>
+    
     <div class="container">
         <header>
-            <a href="index.html" class="back-link">Вернуться на главную</a>
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i>Вернуться на главную</a>
             <div class="logo-container">
                 <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#2563eb" />
+                            <stop offset="0%" stop-color="#3b82f6" />
                             <stop offset="100%" stop-color="#10b981" />
                         </linearGradient>
                         <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
@@ -46,8 +53,8 @@
                 <div class="file-details">
                     <p><i class="fas fa-code-branch"></i> <strong>Версия плагина:</strong> <span id="version">Загрузка...</span></p>
                     <p><i class="fas fa-file-archive"></i> <strong>Размер файла:</strong> <span id="filesize">Загрузка...</span></p>
-                    <p><i class="fas fa-gamepad"></i> <strong>Совместимость:</strong> <span id="compatibility">1.16.5 - 1.19.2</span></p>
-                    <p><i class="fas fa-calendar-alt"></i> <strong>Последнее обновление:</strong> <span id="last-update">15.06.2024</span></p>
+                    <p><i class="fas fa-gamepad"></i> <strong>Совместимость:</strong> <span id="compatibility">Загрузка...</span></p>
+                    <p><i class="fas fa-calendar-alt"></i> <strong>Последнее обновление:</strong> <span id="last-update">Загрузка...</span></p>
                 </div>
 
                 <div class="download-section">
@@ -59,7 +66,6 @@
             </div>
 
             <div id="plugin-features" class="feature-grid">
-                <!-- Динамически добавляется из page.js -->
             </div>
 
             <div class="additional-info">
@@ -72,7 +78,6 @@
                 </ol>
                 
                 <div id="plugin-specific-instructions">
-                    <!-- Динамически добавляется из page.js -->
                 </div>
             </div>
             
@@ -93,9 +98,43 @@
                 <a href="#" class="footer-link"><i class="fab fa-discord"></i> Discord</a>
                 <a href="#" class="footer-link"><i class="fas fa-envelope"></i> Контакт</a>
             </div>
-            <p class="copyright">© 2023-2024 SWS Plugins. Все права защищены.</p>
+            <p class="copyright">© 2023-2024 Elysium Team. Все права защищены.</p>
         </footer>
     </div>
+    
     <script src="page.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            // Проверяем сохраненную тему в localStorage
+            const savedTheme = localStorage.getItem('theme');
+            
+            // Если есть сохраненная тема, применяем ее
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+            
+            // Обработчик клика по кнопке переключения темы
+            themeToggle.addEventListener('click', function() {
+                // Переключаем класс темы
+                document.body.classList.toggle('dark-theme');
+                
+                // Переключаем иконку
+                if (document.body.classList.contains('dark-theme')) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
